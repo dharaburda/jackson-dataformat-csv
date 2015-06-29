@@ -112,7 +112,7 @@ public class BasicParserTest extends ModuleTestBase
         assertEquals("Smith", result.get("lastName"));
         assertEquals("MALE", result.get("gender"));
         assertEquals("false", result.get("verified"));
-        assertEquals("", result.get("userImage"));
+        assertEquals(null, result.get("userImage")); // by default empty string is deserialized to null
 
         assertFalse(it.hasNextValue());
         it.close();

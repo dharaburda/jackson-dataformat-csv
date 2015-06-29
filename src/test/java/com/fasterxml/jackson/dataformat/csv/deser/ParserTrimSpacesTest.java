@@ -75,7 +75,7 @@ public class ParserTrimSpacesTest extends ModuleTestBase
         assertNotNull(entry = it.nextValue());
         assertEquals("ab\t", entry.a);
         assertEquals("c", entry.b);
-        assertEquals("", entry.c);
+        assertEquals(null, entry.c); // by default, empty string is deserialized to null
         
         assertFalse(it.hasNext());
         it.close();

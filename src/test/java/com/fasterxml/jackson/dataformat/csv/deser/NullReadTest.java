@@ -3,7 +3,7 @@ package com.fasterxml.jackson.dataformat.csv.deser;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.dataformat.csv.*;
 
-public class NullRead72Test extends ModuleTestBase
+public class NullReadTest extends ModuleTestBase
 {
     final CsvMapper MAPPER = mapperForCsv();
 
@@ -37,4 +37,34 @@ public class NullRead72Test extends ModuleTestBase
         assertNull(result.id);
         assertEquals("Whatevs", result.desc);
     }
+
+  public void testReadEmptyStrDefaultNullValue() throws Exception
+  {
+    CsvSchema schema = CsvSchema.builder()
+        .addColumn("id")
+        .addColumn("desc")
+        .build();
+
+    // start by writing, first
+    String csv = MAPPER.writer(schema).writeValueAsString(new IdDesc("id", null));
+    // MUST use doubling for quotes!
+    assertEquals("id,\n", csv);
+
+    // but read back
+
+    ObjectReader r = MAPPER.readerFor(IdDesc.class)
+        .with(schema);
+
+    IdDesc result = r.readValue(csv);
+    assertNotNull(result);
+    assertEquals("id", result.id);
+    assertNull(result.desc);
+
+    // also try the other combination
+    result = r.readValue(",Whatevs\n");
+    assertNotNull(result);
+    assertNull(result.id);
+    assertEquals("Whatevs", result.desc);
+  }
+
 }
